@@ -1,0 +1,51 @@
+#include <LPC21xx.h>
+
+#define AH_LED 0x0F      // P0.0-P0.3 (Active High LEDs) 0000 1111
+#define AL_LED 0xF0      // P0.4-P0.7 (Active Low LEDs) 0000 1111
+
+#define SW1 (1<<16)
+#define SW2 (1<<17)
+#define SW3 (1<<18)
+#define SW4 (1<<19)
+
+int main()
+{
+    IODIR0 |= (AH_LED | AL_LED); // led as output
+
+    IODIR0 &= ~(SW1 | SW2 | SW3 | SW4); // switches as input
+
+    while(1)
+    {
+        // Initially all LEDs OFF
+        IOCLR0 = AH_LED;      // Active High LEDs OFF 1111 0000
+        IOSET0 = AL_LED;      // Active Low LEDs OFF  0000 1111 
+
+        // SW1 pressed
+        if(!(IOPIN0 & SW1))
+        {
+            IOSET0 = (1<<0);   // LED0 ON (Active High)
+            IOCLR0 = (1<<7);   // LED7 ON (Active Low)
+        }
+
+        // SW2 pressed
+        else if(!(IOPIN0 & SW2))
+        {
+            IOSET0 = (1<<1);   // LED1 ON
+            IOCLR0 = (1<<6);   // LED6 ON
+        }
+
+        // SW3 pressed
+        else if(!(IOPIN0 & SW3))
+        {
+            IOSET0 = (1<<2);   // LED2 ON
+            IOCLR0 = (1<<5);   // LED5 ON
+        }
+
+        // SW4 pressed
+        else if(!(IOPIN0 & SW4))
+        {
+            IOSET0 = (1<<3);   // LED3 ON
+            IOCLR0 = (1<<4);   // LED4 ON
+        }
+    }
+}
