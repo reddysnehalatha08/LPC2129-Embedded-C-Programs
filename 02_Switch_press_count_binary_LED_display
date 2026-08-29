@@ -1,0 +1,32 @@
+#include <LPC21xx.h>
+
+int count = 0;
+
+int main()
+{
+    // P0.8 to P0.15 as output (LEDs)
+    IODIR0 |= (0xFF << 8);
+
+    // P0.0 as input (Switch)
+    IODIR0 &= ~(1 << 0);
+
+    while(1)
+    {
+        // Active Low Switch Pressed
+        if(!(IOPIN0 & (1 << 0)))
+        {
+            // Wait until switch is released
+            while(!(IOPIN0 & (1 << 0)));
+
+            count++;
+
+            // After 255, start again from 0
+            if(count > 255)
+                count = 0;
+
+            // Display count on LEDs
+            IOPIN0 = (IOPIN0 & ~(0xFF << 8)) | ((count ^ 0x0F) << 8);
+        }
+    }
+}		
+	
