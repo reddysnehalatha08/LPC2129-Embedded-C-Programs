@@ -1,0 +1,27 @@
+#include<lpc21xx.h>
+#include"types.h"
+#include"uart.h"
+
+#define SWITCH (1<<9)
+main(){
+	u8 ch='A';
+	u32 prev=1;
+	IODIR0&=~SWITCH;
+	UART0_Init();
+	while(1){
+		
+		if(!(IOPIN0&SWITCH)&&prev){
+			U0_TX(ch);
+			ch++;
+			
+			if(ch>'Z')
+				ch='A';
+			prev=0;
+			while(!(IOPIN0&SWITCH));
+		}
+		else if(IOPIN0&SWITCH)
+		{
+			prev=1;
+		}
+	}
+}
